@@ -55,19 +55,26 @@ struct Bag{
     //Tries adding the treasure
     //Returns whether the treasure was added
     bool add(const Treasure &t){
+        //The bag as is can't hold
         if(t.weight > weightLeft){
             int removedVal = 0;
             int tempWeightLeft = weightLeft;
             int i = treasure.size()-1;
-            for(; i >= 0; --i){
+            //See if removing some treasure could allow it to fit 
+            //But only if the total value of the treasure being removed is less
+            for(; i >= 0; --i){ 
                 removedVal += treasure[i].value;
                 tempWeightLeft += treasure[i].weight;
                 if(removedVal >= t.value){ //We would remove more value than we gain
                     return false;
                 }
                 if(tempWeightLeft >= t.weight){ //We can now hold t
-                    treasure.erase(treasure.begin() + i, treasure.end());
-                    weightLeft = tempWeightLeft + t.weight;
+                    //treasure.erase(treasure.begin() + i, treasure.end());
+                    for(int j = treasure.size()-1 - i; j >= 0; --j){
+                        std::cout << "- Dropped " << treasure.back().name << '\n';
+                        treasure.pop_back();
+                    }
+                    weightLeft = tempWeightLeft + t.weight; //+ t.weight becasue it gets subtracted below
                     break;
                 }
             }
@@ -120,7 +127,7 @@ int main(){
     std::cout << "Looting...\n";
     for(const Treasure &t : treasures){ //N
         if(bag.add(t)){
-            std::cout << "Took " << t.name << " (S: " << t.score << " W: " << bag.weightLeft << " V: " << bag.curValue << ")\n";
+            std::cout << "+ Took " << t.name << '\n';//" (S: " << t.score << " W: " << bag.weightLeft << " V: " << bag.curValue << ")\n";
             if(bag.weightLeft < minWeight){
                 break; 
             }
