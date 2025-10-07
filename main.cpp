@@ -75,6 +75,7 @@ struct Bag{
                         treasure.pop_back();
                     }
                     weightLeft = tempWeightLeft + t.weight; //+ t.weight becasue it gets subtracted below
+                    curValue -= removedVal;
                     break;
                 }
             }
