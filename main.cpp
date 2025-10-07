@@ -74,7 +74,7 @@ struct Bag{
                         std::cout << "- Dropped " << treasure.back().name << '\n';
                         treasure.pop_back();
                     }
-                    weightLeft = tempWeightLeft + t.weight; //+ t.weight becasue it gets subtracted below
+                    weightLeft = tempWeightLeft;
                     curValue -= removedVal;
                     break;
                 }
@@ -128,5 +128,12 @@ int main(){
     }
     std::cout << "Weight left in bag: " << bag.weightLeft << '\n';
     std::cout << "Treasure Value: " << bag.curValue << '\n';
+    int weight = 0, value = 0;
+    for(const auto &t : bag.treasure){
+        weight += t.weight;
+        value += t.value;
+    }
+     std::cout << "Weight: " << weight << '\n';
+    std::cout << "Treasure Value: " << value << '\n';
     return 0;
 }
