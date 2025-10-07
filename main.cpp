@@ -56,7 +56,24 @@ struct Bag{
     //Returns whether the treasure was added
     bool add(const Treasure &t){
         if(t.weight > weightLeft){
-            return false;
+            int removedVal = 0;
+            int tempWeightLeft = weightLeft;
+            int i = treasure.size()-1;
+            for(; i >= 0; --i){
+                removedVal += treasure[i].value;
+                tempWeightLeft += treasure[i].weight;
+                if(removedVal >= t.value){ //We would remove more value than we gain
+                    return false;
+                }
+                if(tempWeightLeft >= t.weight){ //We can now hold t
+                    treasure.erase(treasure.end() - 1 - i, treasure.end());
+                    weightLeft = tempWeightLeft + t.weight;
+                    break;
+                }
+            }
+            if(i == 0){
+                return false;
+            }
         }
         treasure.push_back(t);
         weightLeft -= t.weight;
