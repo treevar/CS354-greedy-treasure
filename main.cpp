@@ -66,7 +66,7 @@ struct Bag{
                     return false;
                 }
                 if(tempWeightLeft >= t.weight){ //We can now hold t
-                    treasure.erase(treasure.end() - 1 - i, treasure.end());
+                    treasure.erase(treasure.begin() + i, treasure.end());
                     weightLeft = tempWeightLeft + t.weight;
                     break;
                 }
