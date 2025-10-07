@@ -7,12 +7,12 @@
 struct Treasure{
     std::string name;
     int weight, value;
-    float score; //Weight per value (Lower is better)
+    float score; //Value per weight
 
     Treasure() : name(""), weight(-1), value(-1), score(-1) {}
     Treasure(const std::string &name, int weight, int value) : name(name), weight(weight), value(value) {
-        score = weight;
-        score = score / value;
+        score = value;
+        score = score / weight;
     }
     Treasure(const Treasure &other){
         name = other.name;
@@ -22,7 +22,7 @@ struct Treasure{
     }
 
     bool operator<(const Treasure &rhs){
-        return score < rhs.score;
+        return score > rhs.score;
     }
     Treasure operator=(const Treasure &rhs){
         name = rhs.name;
@@ -55,37 +55,25 @@ struct Bag{
     //Tries adding the treasure
     //Returns whether the treasure was added
     bool add(const Treasure &t){
-        //The bag as is can't hold
-        if(t.weight > weightLeft){
-            int removedVal = 0;
-            int tempWeightLeft = weightLeft;
-            int i = treasure.size()-1;
-            //See if removing some treasure could allow it to fit 
-            //But only if the total value of the treasure being removed is less
-            for(; i >= 0; --i){ 
-                removedVal += treasure[i].value;
-                tempWeightLeft += treasure[i].weight;
-                if(removedVal >= t.value){ //We would remove more value than we gain
-                    return false;
-                }
-                if(tempWeightLeft >= t.weight){ //We can now hold t
-                    //treasure.erase(treasure.begin() + i, treasure.end());
-                    for(int j = treasure.size()-1 - i; j >= 0; --j){
-                        std::cout << "- Dropped " << treasure.back().name << '\n';
-                        treasure.pop_back();
-                    }
-                    weightLeft = tempWeightLeft;
-                    curValue -= removedVal;
-                    break;
-                }
-            }
-            if(i < 0){
-                return false;
-            }
+        if(weightLeft == 0){
+            return false;
         }
-        treasure.push_back(t);
-        weightLeft -= t.weight;
-        curValue += t.value;
+        
+        if(t.weight > weightLeft){
+            Treasure tPart {};
+            tPart.name = t.name + " Part";
+            tPart.weight = weightLeft;
+            tPart.value = weightLeft * t.score;
+            tPart.score = t.score;
+            treasure.push_back(tPart);
+            weightLeft = 0;
+            curValue += tPart.value;
+        }
+        else{
+            treasure.push_back(t);
+            weightLeft -= t.weight;
+            curValue += t.value;
+        }
         return true;
     }
 };
@@ -123,7 +111,10 @@ int main(){
     std::cout << "Looting...\n";
     for(const Treasure &t : treasures){ //N
         if(bag.add(t)){
-            std::cout << "+ Took " << t.name << '\n';//" (S: " << t.score << " W: " << bag.weightLeft << " V: " << bag.curValue << ")\n";
+            std::cout << "+ Took " << bag.treasure.back().name << '\n';//" (S: " << t.score << " W: " << bag.weightLeft << " V: " << bag.curValue << ")\n";
+        }
+        else{
+            break;
         }
     }
     std::cout << "Weight left in bag: " << bag.weightLeft << '\n';
