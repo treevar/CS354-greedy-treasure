@@ -105,7 +105,6 @@ int main(){
     treasures.reserve(TREASURE_COUNT);
 
     std::string line;
-    int minWeight = MAX_BAG_WEIGHT;
     Treasure t;
     while(caveStream.good()){
         std::getline(caveStream, line);
@@ -114,10 +113,6 @@ int main(){
         }
 
         t = Treasure::fromString(line);
-        if(t.weight < minWeight){
-            minWeight = t.weight;
-        }
-
         treasures.push_back(t);
     }
     caveStream.close();
@@ -129,9 +124,6 @@ int main(){
     for(const Treasure &t : treasures){ //N
         if(bag.add(t)){
             std::cout << "+ Took " << t.name << '\n';//" (S: " << t.score << " W: " << bag.weightLeft << " V: " << bag.curValue << ")\n";
-            if(bag.weightLeft < minWeight){
-                break; 
-            }
         }
     }
     std::cout << "Weight left in bag: " << bag.weightLeft << '\n';
