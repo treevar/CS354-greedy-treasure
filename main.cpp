@@ -56,6 +56,9 @@ struct Bag{
     //Tries adding the treasure
     //Returns whether the treasure was added
     bool add(const Treasure &t){
+        if(weightLeft == 0){ //At max capacity
+            return false;
+        }
         //The bag as is can't hold
         if(t.weight > weightLeft){
             int removedVal = 0;
