@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <chrono>
 
 struct Treasure{
     std::string name;
@@ -91,6 +92,7 @@ struct Bag{
 };
 
 int main(){
+    std::chrono::time_point startTime = std::chrono::system_clock::now();
     const char *CAVE_FILE = "./cave.csv";
     const size_t TREASURE_COUNT = 1000;
     const int MAX_BAG_WEIGHT = 4000;
@@ -126,6 +128,9 @@ int main(){
             std::cout << "+ Took " << t.name << '\n';//" (S: " << t.score << " W: " << bag.weightLeft << " V: " << bag.curValue << ")\n";
         }
     }
+    std::chrono::time_point endTime = std::chrono::system_clock::now();
+    std::chrono::duration<float, std::milli> runtime = endTime - startTime;
+    std::cout << "Ran in " << runtime.count() << "ms\n";
     std::cout << "Weight left in bag: " << bag.weightLeft << '\n';
     std::cout << "Treasure Value: " << bag.curValue << '\n';
     return 0;
